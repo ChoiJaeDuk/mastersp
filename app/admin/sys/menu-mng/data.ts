@@ -17,7 +17,7 @@ export async function selectMenuList() {
              M.PARM_CTT,
              M.USE_YN
         FROM TBL_SYS_MENU M
-       ORDER BY M.MENU_STEP, M.UPPO_MENU_ID NULLS FIRST, M.MENU_SEQO
+       ORDER BY M.MENU_STEP, (M.UPPO_MENU_ID IS NOT NULL), M.UPPO_MENU_ID, M.MENU_SEQO
     `);
   } catch (error) {
     console.error('Failed to fetch selectMenuList :', error);

@@ -47,7 +47,7 @@ export async function selectProjectList(): Promise<ProjectsByKind> {
         FROM TBL_HP_PROJECT P
         LEFT JOIN TBL_HP_PROJECT_CTG C ON P.CTG_SQNO = C.CTG_SQNO
        WHERE P.USE_YN = 'Y'
-       ORDER BY C.CTG_NM DESC NULLS LAST, P.MENU_SEQO, P.PRJ_SQNO
+       ORDER BY (C.CTG_NM IS NULL), C.CTG_NM DESC, P.MENU_SEQO, P.PRJ_SQNO
     `);
 
     const grouped: ProjectsByKind = {};

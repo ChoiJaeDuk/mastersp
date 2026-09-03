@@ -16,7 +16,7 @@ export async function selectUserList() {
              A.APR_YN,
              A.APR_ID,
              (SELECT X.USER_NM FROM TBL_SYS_USER X WHERE X.USER_ID = A.APR_ID) AS APR_NM,
-             TO_CHAR(A.FRST_REG_DT, 'YYYY-MM-DD HH24:MI') AS FRST_REG_DT,
+             DATE_FORMAT(A.FRST_REG_DT, '%Y-%m-%d %H:%i') AS FRST_REG_DT,
              '' AS USER_PWD
         FROM TBL_SYS_USER A
        ORDER BY A.USER_ID

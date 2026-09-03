@@ -18,7 +18,8 @@ export type AuthMenuRow = {
 
 export async function selectAuthMenuList(authId: string): Promise<AuthMenuRow[]> {
   try {
-    return await query<AuthMenuRow>(SQL`
+    // MySQL 의 불리언 표현식은 1/0 을 돌려주므로 화면에서 쓰기 전에 boolean 으로 바꾼다.
+    const rows = await query<Omit<AuthMenuRow, 'AUTH_CHK'> & { AUTH_CHK: number }>(SQL`
       SELECT M3.MENU_ID,
              M3.MENU_NM,
              M1.MENU_NM AS MENU1_NM,
@@ -34,6 +35,8 @@ export async function selectAuthMenuList(authId: string): Promise<AuthMenuRow[]>
        WHERE M3.MENU_STEP = '3'
        ORDER BY M1.MENU_SEQO, M2.MENU_SEQO, M3.MENU_SEQO
     `);
+
+    return rows.map((row) => ({ ...row, AUTH_CHK: Boolean(row.AUTH_CHK) }));
   } catch (error) {
     console.error('Failed to fetch selectAuthMenuList :', error);
     return [];

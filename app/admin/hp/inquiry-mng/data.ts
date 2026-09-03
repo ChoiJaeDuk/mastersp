@@ -32,8 +32,8 @@ export async function selectInquiryList() {
              WRTR_NM,
              WRTR_TELNO,
              WRTR_EML,
-             TO_CHAR(FRST_REG_DT, 'YYYY-MM-DD HH24:MI') AS FRST_REG_DT,
-             TO_CHAR(RPLY_DT, 'YYYY-MM-DD HH24:MI') AS RPLY_DT
+             DATE_FORMAT(FRST_REG_DT, '%Y-%m-%d %H:%i') AS FRST_REG_DT,
+             DATE_FORMAT(RPLY_DT, '%Y-%m-%d %H:%i') AS RPLY_DT
         FROM TBL_HP_INQUIRY
        WHERE DEL_YN = 'N'
        ORDER BY FRST_REG_DT DESC
@@ -60,8 +60,8 @@ export async function selectInquiry(inqSqno: number): Promise<InquiryDetail | nu
              RPLY_CTT,
              RPLY_USER_ID,
              WRTR_IP,
-             TO_CHAR(RPLY_DT, 'YYYY-MM-DD HH24:MI') AS RPLY_DT,
-             TO_CHAR(FRST_REG_DT, 'YYYY-MM-DD HH24:MI') AS FRST_REG_DT
+             DATE_FORMAT(RPLY_DT, '%Y-%m-%d %H:%i') AS RPLY_DT,
+             DATE_FORMAT(FRST_REG_DT, '%Y-%m-%d %H:%i') AS FRST_REG_DT
         FROM TBL_HP_INQUIRY
        WHERE INQ_SQNO = ${inqSqno}
          AND DEL_YN = 'N'

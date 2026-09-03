@@ -5,13 +5,11 @@
  * "커넥션 획득 → 트랜잭션 시작 → 삭제/수정/추가 → 커밋 / 롤백 → 반환" 흐름을 한 곳에 모았다.
  * 실제 SQL 은 화면마다 다르므로 콜백으로 받는다. (테이블명을 문자열로 조립하지 않는다)
  */
-import type { PoolClient } from 'pg';
-
-import { withTransaction } from '@/lib/db';
+import { withTransaction, type DbConnection } from '@/lib/db';
 import type { GridRow } from '@/common/gridFns';
 import type { GridChanges, GridSaveResult } from '@/hooks/useGridHandler';
 
-type RowHandler = (client: PoolClient, row: GridRow, userId: string) => Promise<void>;
+type RowHandler = (client: DbConnection, row: GridRow, userId: string) => Promise<void>;
 
 export type GridSaveHandlers = {
   insert?: RowHandler;

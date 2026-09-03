@@ -33,7 +33,7 @@ export async function selectProjectList() {
              P.USE_YN
         FROM TBL_HP_PROJECT P
         LEFT JOIN TBL_HP_PROJECT_CTG C ON P.CTG_SQNO = C.CTG_SQNO
-       ORDER BY P.PRJ_KND_CD, C.CTG_NM DESC NULLS LAST, P.MENU_SEQO, P.PRJ_SQNO
+       ORDER BY P.PRJ_KND_CD, (C.CTG_NM IS NULL), C.CTG_NM DESC, P.MENU_SEQO, P.PRJ_SQNO
     `);
   } catch (error) {
     console.error('Failed to fetch selectProjectList :', error);

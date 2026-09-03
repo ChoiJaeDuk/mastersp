@@ -35,9 +35,8 @@ export async function saveUserAuthList(changes: GridChanges): Promise<GridSaveRe
       for (const auth of auths) {
         if (row[auth.AUTH_ID] === true) {
           await client.query(SQL`
-            INSERT INTO TBL_SYS_USER_AUTH (USER_ID, AUTH_ID, FRST_REGR_EMPNO, LST_CHGR_EMPNO)
+            INSERT IGNORE INTO TBL_SYS_USER_AUTH (USER_ID, AUTH_ID, FRST_REGR_EMPNO, LST_CHGR_EMPNO)
             VALUES (${userId}, ${auth.AUTH_ID}, ${changer}, ${changer})
-            ON CONFLICT (USER_ID, AUTH_ID) DO NOTHING
           `);
         } else {
           await client.query(SQL`

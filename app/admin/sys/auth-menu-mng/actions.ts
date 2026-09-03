@@ -45,9 +45,8 @@ export async function saveAuthMenuList(
 
       if (row.AUTH_CHK === true) {
         await client.query(SQL`
-          INSERT INTO TBL_SYS_AUTH_MENU (AUTH_ID, MENU_ID, FRST_REGR_EMPNO, LST_CHGR_EMPNO)
+          INSERT IGNORE INTO TBL_SYS_AUTH_MENU (AUTH_ID, MENU_ID, FRST_REGR_EMPNO, LST_CHGR_EMPNO)
           VALUES (${authId}, ${menuId}, ${changer}, ${changer})
-          ON CONFLICT (AUTH_ID, MENU_ID) DO NOTHING
         `);
       } else {
         await client.query(SQL`

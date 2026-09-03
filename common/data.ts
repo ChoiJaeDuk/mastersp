@@ -1,9 +1,9 @@
 /**
  * 공통 데이터 조회 (메뉴 / 권한)
  *
- * osca 의 common/data.js + app/api/menu/route.js 조회를 PostgreSQL 로 옮긴 것이다.
- * osca 는 MySQL 의 IF() / IFNULL() 과 다단 OUTER JOIN 으로 작성돼 있으나,
- * 여기서는 CTE + INNER JOIN 으로 같은 결과를 더 단순하게 만든다.
+ * osca 의 common/data.js + app/api/menu/route.js 조회를 옮긴 것이다.
+ * 대상이 MySQL 5.6 이라 CTE(WITH ...) 를 쓸 수 없어 IN 서브쿼리로 작성했다.
+ * 문자열 연결도 MySQL 에서 `||` 는 OR 이므로 CONCAT() 을 쓴다.
  */
 import { isDbConfigured, query, SQL } from '@/lib/db';
 
@@ -34,14 +34,6 @@ export async function selectMenuContents(userId: string): Promise<MenuRow[]> {
 
   try {
     return await query<MenuRow>(SQL`
-      WITH AUTHORIZED AS (
-        SELECT DISTINCT AM.MENU_ID
-          FROM TBL_SYS_AUTH_MENU AM
-          JOIN TBL_SYS_AUTH A ON AM.AUTH_ID = A.AUTH_ID AND A.USE_YN = 'Y'
-         WHERE AM.AUTH_ID IN (
-                 SELECT AUTH_ID FROM TBL_SYS_USER_AUTH WHERE USER_ID = ${userId}
-               )
-      )
       SELECT M1.MENU_ID  AS MENU1_ID,
              M1.MENU_NM  AS MENU1_NM,
              M2.MENU_ID  AS MENU2_ID,
@@ -51,15 +43,21 @@ export async function selectMenuContents(userId: string): Promise<MenuRow[]> {
              M3.MENU_ID  AS MENU_ID,
              P.PGM_ID,
              CASE WHEN COALESCE(M3.PARM_CTT, '') = '' THEN P.PGM_PTH_NM
-                  ELSE P.PGM_PTH_NM || '?' || M3.PARM_CTT
+                  ELSE CONCAT(P.PGM_PTH_NM, '?', M3.PARM_CTT)
              END AS ROUTE
         FROM TBL_SYS_MENU M3
-        JOIN AUTHORIZED AU ON M3.MENU_ID = AU.MENU_ID
         JOIN TBL_SYS_MENU M2 ON M3.UPPO_MENU_ID = M2.MENU_ID AND M2.USE_YN = 'Y'
         JOIN TBL_SYS_MENU M1 ON M2.UPPO_MENU_ID = M1.MENU_ID AND M1.USE_YN = 'Y'
         LEFT JOIN TBL_SYS_PGM P ON M3.PGM_ID = P.PGM_ID
        WHERE M3.USE_YN = 'Y'
          AND M3.MENU_STEP = '3'
+         AND M3.MENU_ID IN (
+               SELECT AM.MENU_ID
+                 FROM TBL_SYS_AUTH_MENU AM
+                 JOIN TBL_SYS_AUTH A ON AM.AUTH_ID = A.AUTH_ID AND A.USE_YN = 'Y'
+                 JOIN TBL_SYS_USER_AUTH UA ON UA.AUTH_ID = AM.AUTH_ID
+                WHERE UA.USER_ID = ${userId}
+             )
        ORDER BY M1.MENU_SEQO, M2.MENU_SEQO, M3.MENU_SEQO
     `);
   } catch (error) {

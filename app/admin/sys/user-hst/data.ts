@@ -11,7 +11,7 @@ export async function selectUserHstList(limit = 500) {
              H.USER_ID,
              U.USER_NM,
              H.CNN_IP,
-             TO_CHAR(H.FRST_REG_DT, 'YYYY-MM-DD HH24:MI:SS') AS CNN_DT
+             DATE_FORMAT(H.FRST_REG_DT, '%Y-%m-%d %H:%i:%s') AS CNN_DT
         FROM TBL_SYS_USER_HST H
         LEFT JOIN TBL_SYS_USER U ON H.USER_ID = U.USER_ID
        ORDER BY H.FRST_REG_DT DESC

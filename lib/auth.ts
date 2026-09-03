@@ -12,7 +12,7 @@ import bcrypt from 'bcryptjs';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { DbNotConfiguredError, getPool, query, SQL } from '@/lib/db';
+import { DbNotConfiguredError, execute, query, SQL } from '@/lib/db';
 
 type UserRow = {
   USER_ID: string;
@@ -92,12 +92,10 @@ export const authOptions: NextAuthOptions = {
 
         // 접속 이력 (실패해도 로그인은 진행한다)
         try {
-          await getPool().query(
-            SQL`
-              INSERT INTO TBL_SYS_USER_HST (USER_ID, FRST_REGR_EMPNO, LST_CHGR_EMPNO)
-              VALUES (${user.id}, 'system', 'system')
-            `,
-          );
+          await execute(SQL`
+            INSERT INTO TBL_SYS_USER_HST (USER_ID, FRST_REGR_EMPNO, LST_CHGR_EMPNO)
+            VALUES (${user.id}, 'system', 'system')
+          `);
         } catch (error) {
           console.error('Failed to insert TBL_SYS_USER_HST :', error);
         }

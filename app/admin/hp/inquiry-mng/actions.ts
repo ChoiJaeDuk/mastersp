@@ -5,7 +5,7 @@
  */
 'use server';
 
-import { getPool, SQL } from '@/lib/db';
+import { execute, SQL } from '@/lib/db';
 import { requireUserId } from '@/common/session';
 import { runGridSave, toNumberOrNull } from '@/common/gridSave';
 import type { GridRow } from '@/common/gridFns';
@@ -77,7 +77,7 @@ export async function replyInquiry(
   }
 
   try {
-    await getPool().query(SQL`
+    await execute(SQL`
       UPDATE TBL_HP_INQUIRY
          SET RPLY_CTT = ${content},
              RPLY_DT = NOW(),
