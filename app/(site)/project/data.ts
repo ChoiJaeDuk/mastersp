@@ -1,27 +1,43 @@
 /**
  * 수행과제 데이터 조회
  *
- * 레거시: kor/project/project.html
- *   select * from tb_category where tablename='tb_project' ... order by catename desc
- *   select ... from tb_project where mode='1'|'2' and depth1='{cateno}' ...
- * 카테고리마다 쿼리를 반복하던 것을 한 번의 조인으로 바꿨다.
+ * 레거시 운영 DB(masterspace_co_kr)의 tb_project / tb_category 를 직접 읽는다.
+ * 기존 PHP 관리자에서 등록한 데이터를 그대로 쓰기 위한 것이다.
+ *
+ * 원본 쿼리: kor/project/project.html
+ *   select * from tb_category where tablename='tb_project' and lantype='1' order by catename desc
+ *   select ... from tb_project where mode='1'|'2' and lantype='1' and viewtype='Y' and depth1='{cateno}'
+ * 분류마다 쿼리를 반복하던 것을 한 번의 조인으로 바꿨다. (분류 15개 × 2탭 = 30회 → 1회)
+ *
+ * 실제 컬럼 구조는 scripts/check-legacy.mjs 로 확인했다.
+ *   tb_project.mode         varchar(50)  '1'=개발 / '2'=연구
+ *   tb_project.depth1       int(8)       → tb_category.cateno
+ *   tb_project.field_etc_01 varchar(255) 발주처
+ *   tb_project.sdate/edate  varchar(20)  'YYYY-MM-DD' 문자열
  */
 import { isDbConfigured, query, SQL } from '@/lib/db';
 
-import type { ProjectsByKind } from './types';
+import type { ProjectCategory, ProjectsByKind } from './types';
 
 export * from './types';
 
 type ProjectRow = {
-  PRJ_SQNO: number;
-  PRJ_KND_CD: string;
-  PRJ_NM: string;
-  PRJ_CTT: string | null;
-  BGNG_DE: string | null;
-  END_DE: string | null;
-  ORDR_NM: string | null;
-  CTG_NM: string | null;
+  uid: number;
+  mode: string;
+  title: string;
+  content: string | null;
+  sdate: string | null;
+  edate: string | null;
+  field_etc_01: string | null;
+  catename: string | null;
 };
+
+/** 레거시가 저장한 날짜 문자열에서 'YYYY-MM-DD' 만 취한다. */
+function toDate(value: string | null): string | null {
+  const text = String(value ?? '').slice(0, 10);
+
+  return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : null;
+}
 
 /**
  * 수행과제 조회
@@ -36,27 +52,33 @@ export async function selectProjectList(): Promise<ProjectsByKind> {
 
   try {
     const rows = await query<ProjectRow>(SQL`
-      SELECT P.PRJ_SQNO,
-             P.PRJ_KND_CD,
-             P.PRJ_NM,
-             P.PRJ_CTT,
-             P.BGNG_DE,
-             P.END_DE,
-             P.ORDR_NM,
-             C.CTG_NM
-        FROM TBL_HP_PROJECT P
-        LEFT JOIN TBL_HP_PROJECT_CTG C ON P.CTG_SQNO = C.CTG_SQNO
-       WHERE P.USE_YN = 'Y'
-       ORDER BY (C.CTG_NM IS NULL), C.CTG_NM DESC, P.MENU_SEQO, P.PRJ_SQNO
+      SELECT P.uid,
+             P.mode,
+             P.title,
+             P.content,
+             P.sdate,
+             P.edate,
+             P.field_etc_01,
+             C.catename
+        FROM tb_project P
+        LEFT JOIN tb_category C
+               ON C.cateno = P.depth1
+              AND C.tablename = 'tb_project'
+              AND C.lantype = '1'
+       WHERE P.lantype = '1'
+         AND P.viewtype = 'Y'
+       ORDER BY P.mode, (C.catename IS NULL), C.catename DESC, P.sortnum, P.uid
     `);
 
     const grouped: ProjectsByKind = {};
 
     for (const row of rows) {
-      const categories = (grouped[row.PRJ_KND_CD] ??= []);
-      const name = row.CTG_NM ?? '기타';
+      // 레거시 mode 는 varchar 라 '1' / '2' 외의 값이 들어올 수 있어 방어한다.
+      const kind = row.mode === '2' ? '2' : '1';
+      const categories = (grouped[kind] ??= []);
+      const name = row.catename ?? '기타';
 
-      let category = categories.find((entry) => entry.name === name);
+      let category: ProjectCategory | undefined = categories.find((entry) => entry.name === name);
 
       if (!category) {
         category = { name, items: [] };
@@ -64,15 +86,16 @@ export async function selectProjectList(): Promise<ProjectsByKind> {
       }
 
       category.items.push({
-        id: row.PRJ_SQNO,
-        title: row.PRJ_NM,
-        contents: (row.PRJ_CTT ?? '')
-          .split('\n')
+        id: row.uid,
+        title: row.title,
+        // 레거시는 CRLF 로 저장돼 있고, 화면에서는 줄 단위로 불릿이 된다.
+        contents: (row.content ?? '')
+          .split(/\r\n?|\n/)
           .map((line) => line.trim())
           .filter(Boolean),
-        startDate: row.BGNG_DE,
-        endDate: row.END_DE,
-        client: row.ORDR_NM,
+        startDate: toDate(row.sdate),
+        endDate: toDate(row.edate),
+        client: row.field_etc_01 || null,
       });
     }
 
