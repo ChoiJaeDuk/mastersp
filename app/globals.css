@@ -256,6 +256,20 @@
     pointer-events: auto;
   }
 
+  /*
+   * 원본 .drop__list li 의 fade-in-down 효과.
+   * 패널이 열릴 때 내용이 살짝 내려오며 나타난다.
+   * 지연 중에도 시작 상태(투명)를 유지해야 하므로 fill-mode 는 both 를 쓴다.
+   */
+  .mega-fade-in {
+    animation: mega-fade-in-down 1s ease-in-out both;
+  }
+
+  /* 이미지가 먼저, 메뉴 목록이 살짝 뒤따라 나타나도록 시차를 준다. */
+  .mega-fade-in--delayed {
+    animation-delay: 0.1s;
+  }
+
   /* 원본 .header .nav .depth-1 > .link : 하단 주황색 인디케이터 */
   .gnb-link {
     position: relative;
@@ -384,5 +398,21 @@
       transform: none;
       transition: none;
     }
+
+    .mega-fade-in {
+      animation: none;
+    }
+  }
+}
+
+/* 원본 @keyframes fade-in-down */
+@keyframes mega-fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -95,11 +95,12 @@ export default function Header() {
         className="mega-panel absolute top-full left-0 hidden w-full border-t border-[#ddd] bg-shell lg:block"
       >
         {activeItem && (
-          <div className="site-container">
+          // key 를 주어 다른 메뉴로 옮길 때마다 fade-in-down 이 다시 재생되게 한다.
+          <div key={activeItem.id} className="site-container">
             {/* 원본 .content-wrap : 늘이지 않고 통째로 가운데 정렬한다. */}
             <div className="flex w-full items-center justify-center py-[5.625rem]">
               {/* 원본 .img-bx : 설명(왼쪽) + 이미지(오른쪽) 가로 배치 */}
-              <div className="flex shrink-0 items-center gap-10">
+              <div className="mega-fade-in flex shrink-0 items-center gap-10">
                 <p className="shrink-0 text-xl font-medium text-white">
                   {activeItem.description.map((line) => (
                     <span key={line} className="block">
@@ -112,12 +113,12 @@ export default function Header() {
                   alt=""
                   width={422}
                   height={232}
-                  className="h-auto w-[422px] shrink-0 rounded-[1em]"
+                  className="h-auto w-[422px] shrink-0 rounded-[1em] brightness-110"
                 />
               </div>
 
               {/* 원본 .text-bx : 이미지 오른쪽에 한 줄씩 나열 (margin-left 5.3125rem) */}
-              <ul className="ml-[5.3125rem] shrink-0 space-y-2">
+              <ul className="mega-fade-in mega-fade-in--delayed ml-[5.3125rem] shrink-0 space-y-2">
                 {activeItem.children.map((child) => (
                   <li key={child.href} className="leading-tight">
                     <Link
