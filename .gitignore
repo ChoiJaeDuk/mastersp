@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# .env.example 은 값이 비어 있는 템플릿이므로 커밋한다.
+!.env.example

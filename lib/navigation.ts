@@ -11,6 +11,8 @@ export type NavChild = {
 export type NavItem = {
   id: string;
   label: string;
+  /** 서브페이지 상단 비주얼에 노출되는 영문 타이틀 (원본 arr_data.php 의 $nav_N_en) */
+  labelEn: string;
   href: string;
   /** 메가 드롭다운 이미지 (권장 사이즈 422*232) */
   image: string;
@@ -23,6 +25,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'drop-1',
     label: '회사소개',
+    labelEn: 'Company',
     href: '/company',
     image: '/images/main/gnb-img01.jpg',
     description: ['장인의공간은', '국내 최고의 R&D 전문 기업을', '목표로 합니다.'],
@@ -36,6 +39,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'drop-2',
     label: '제품소개',
+    labelEn: 'Product',
     href: '/product/m-core',
     image: '/images/main/gnb-img02.jpg',
     description: ['시장 변화에도', '유연하게 대응이', '가능합니다.'],
@@ -52,6 +56,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'drop-3',
     label: '수행과제',
+    labelEn: 'Performance',
     href: '/project',
     image: '/images/main/gnb-img03.jpg',
     description: ['다양한 요구사항에 맞는', '최적의 시스템을', '구축합니다.'],
@@ -60,6 +65,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'drop-4',
     label: '전력IT',
+    labelEn: 'Market',
     href: '/strategy',
     image: '/images/main/gnb-img04.jpg',
     description: ['전력시장의', '미래를 이끌어갑니다.'],
@@ -74,6 +80,7 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'drop-5',
     label: '고객문의',
+    labelEn: 'Help desk',
     href: '/inquiry',
     image: '/images/main/gnb-img05.jpg',
     description: ['에너지에 대한', '궁금한 사항을', '해결해 드립니다.'],
@@ -94,3 +101,25 @@ export const COMPANY_INFO = {
   engSiteUrl: 'https://www.masterspace.co.kr/eng/main/main.html',
   copyright: 'Copyright © 2024 장인의공간. All Rights Reserved.',
 };
+
+/** 사업장 정보 (원본 kor/inquiry/inquiry.html, kor/company/company.html) */
+export const OFFICES = [
+  {
+    name: '본사',
+    address: '전라남도 나주시 우정로 10, 이노파크 식스틴타워 사동 406호',
+    tel: '061-331-8408',
+    fax: '061-331-8409',
+  },
+  {
+    name: '광명지사',
+    address: '경기도 광명시 일직로 43, GIDC A동 2612호',
+    tel: '02-6239-7601~7604',
+    fax: '02-6239-7605',
+  },
+  {
+    name: '대전지사',
+    address: '대전광역시 유성구 엑스포로 419 주1동 410호',
+    tel: '',
+    fax: '',
+  },
+] as const;
