@@ -1,12 +1,14 @@
 /**
  * 전력IT 페이지 (Server Component)
  * 원본: kor/strategy/strategy.html
+ *
+ * 원본은 type--01 ~ type--05 가 서로 다른 레이아웃이라(좌우 배치·전폭 이미지·원형 스텝)
+ * 공통 루프로 뭉치지 않고 원본 마크업 그대로 하나씩 옮겼다.
+ * 본문 문구는 lib/content/strategy.ts 에 있다.
  */
 import type { Metadata } from 'next';
-import Image from 'next/image';
 
-import SectionTitle from '@/components/layout/SectionTitle';
-import SubNav from '@/components/layout/SubNav';
+import FixNav from '@/components/layout/FixNav';
 import SubVisual from '@/components/layout/SubVisual';
 import Reveal from '@/components/ui/Reveal';
 import { STRATEGY_SECTIONS } from '@/lib/content/strategy';
@@ -19,125 +21,265 @@ export const metadata: Metadata = {
   description: '전력시장, 수요반응, HEMS/BEMS, Microgrid, Smart Grid 관련 사업 소개',
 };
 
-/** 장인의공간 관련업무 블록 (원본 .bottom-bx .txt-bx) */
+const [POWER, DR, EMS, MICROGRID, SMARTGRID] = STRATEGY_SECTIONS;
+
+/** 섹션 제목 (원본 .sub-title-bx) */
+function SectionTitle({ label, title }: { label: string; title: string }) {
+  return (
+    <Reveal className="sub-title-bx">
+      <p className="title">{label}</p>
+      <p className="info--title whitespace-pre-line">{title}</p>
+    </Reveal>
+  );
+}
+
+/** 장인의공간 관련업무 (원본 .bottom-bx .txt-bx) */
 function RelatedWork({ paragraphs }: { paragraphs: string[] }) {
   return (
-    <Reveal className="mt-10 lg:mt-14">
-      <p className="t-dec-01 font-semibold text-brand">장인의공간 관련업무</p>
-      <div className="mt-4 space-y-4 lg:mt-6">
-        {paragraphs.map((paragraph, index) => (
-          <p key={index} className="t-dec-03 whitespace-pre-line text-shell">
-            {paragraph}
-          </p>
-        ))}
-      </div>
-    </Reveal>
+    <div className="txt-bx sub-container">
+      <p className="type--title">장인의공간 관련업무</p>
+      {paragraphs.map((paragraph, index) => (
+        <p
+          key={index}
+          className={`dec--03 whitespace-pre-line${index > 0 ? ' mt-5 lg:mt-8' : ''}`}
+        >
+          {paragraph}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/** 문단 묶음 */
+function Paragraphs({ block }: { block: (typeof STRATEGY_SECTIONS)[number]['blocks'][number] }) {
+  return (
+    <>
+      {block.paragraphs.map((paragraph, index) => (
+        <p
+          key={index}
+          className={`whitespace-pre-line ${
+            block.lead && index === 0 ? 'dec--01 font-weight-medium' : 'dec--03'
+          }${index > 0 ? ' mt-5 lg:mt-8' : ''}`}
+        >
+          {paragraph}
+        </p>
+      ))}
+    </>
   );
 }
 
 export default function StrategyPage() {
   return (
-    <main id="contents" className="overflow-x-clip">
-      <SubVisual titleEn={NAV.labelEn} titleKo={NAV.label} />
-      <SubNav items={NAV.children} />
+    <>
+      <SubVisual titleEn={NAV.labelEn} />
+      <FixNav items={NAV.children} variant="en-pd-nav" />
 
-      {STRATEGY_SECTIONS.map((section, sectionIndex) => (
-        <section
-          key={section.id}
-          id={section.id}
-          // 고정 서브 네비게이션에 제목이 가리지 않도록 여백을 둔다.
-          className={`scroll-mt-24 py-20 lg:py-30 ${sectionIndex % 2 === 1 ? 'bg-[#fafafa]' : ''}`}
-        >
-          <div className="site-container">
-            <SectionTitle label={section.label} title={section.title} />
+      <main className="main" id="contents">
+        <section className="sc--strategy">
+          {/* type--01 전력시장 */}
+          <div className="type--01 cm--type" id={POWER.id}>
+            <div className="sub-container">
+              <SectionTitle label={POWER.label} title={POWER.title} />
 
-            <div className="mt-10 space-y-14 lg:mt-16 lg:space-y-20">
-              {section.blocks.map((block, blockIndex) => (
-                <div
-                  key={blockIndex}
-                  className={`grid items-center gap-8 lg:gap-16 ${
-                    block.image ? 'lg:grid-cols-2' : ''
-                  }`}
-                >
-                  {block.image ? (
-                    <Reveal
-                      animation={blockIndex % 2 === 0 ? 'fade-right' : 'fade-left'}
-                      className={blockIndex % 2 === 0 ? '' : 'lg:order-2'}
-                    >
-                      <Image
-                        src={block.image}
-                        alt={block.imageAlt ?? ''}
-                        width={1200}
-                        height={800}
-                        sizes="(max-width: 1024px) 100vw, 600px"
-                        className="h-auto w-full"
-                      />
-                    </Reveal>
-                  ) : null}
+              <div className="top-bx">
+                <Reveal animation="fade-right" className="img-bx">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={POWER.blocks[0].image} alt={POWER.blocks[0].imageAlt} />
+                </Reveal>
+                <Reveal animation="fade-left" className="txt-bx">
+                  <Paragraphs block={POWER.blocks[0]} />
+                </Reveal>
+              </div>
 
-                  <Reveal animation={blockIndex % 2 === 0 ? 'fade-left' : 'fade-right'}>
-                    <div className="space-y-5 lg:space-y-8">
-                      {block.paragraphs.map((paragraph, paragraphIndex) => (
-                        <p
-                          key={paragraphIndex}
-                          className={`whitespace-pre-line ${
-                            block.lead && paragraphIndex === 0
-                              ? 't-dec-01 font-medium text-ink'
-                              : 't-dec-03 text-shell'
-                          }`}
-                        >
-                          {paragraph}
-                        </p>
-                      ))}
-                    </div>
-                  </Reveal>
-                </div>
-              ))}
+              <div className="center-bx">
+                <Reveal animation="fade-right" className="txt-bx">
+                  <Paragraphs block={POWER.blocks[1]} />
+                </Reveal>
+                <Reveal animation="fade-left" className="img-bx">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={POWER.blocks[1].image} alt={POWER.blocks[1].imageAlt} />
+                </Reveal>
+              </div>
             </div>
 
-            {/* 스마트그리드 구축 시나리오 */}
-            {section.steps ? (
-              <div className="mt-14 lg:mt-20">
-                <Reveal>
-                  <p className="t-dec-01 text-center font-semibold text-ink">
-                    {section.steps.title}
-                  </p>
-                </Reveal>
-                <ul className="mt-8 grid gap-6 md:grid-cols-3 lg:mt-12">
-                  {section.steps.items.map((item, index) => (
-                    <li key={item.step}>
-                      <Reveal delay={index * 120}>
-                        <div className="flex h-full flex-col items-center border border-[#e5e5e5] bg-white px-6 py-10 text-center">
-                          <p className="t-dec-01 font-bold text-brand">{item.step}</p>
-                          <p className="mt-1 text-[0.875rem] text-shell">{item.term}</p>
-                          <span aria-hidden className="my-5 h-px w-10 bg-[#ddd]" />
-                          <p className="t-dec-03 whitespace-pre-line text-shell">{item.desc}</p>
-                        </div>
-                      </Reveal>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
+            <div className="bottom-bx">
+              <Reveal className="img-bx">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={POWER.wideImage} alt="" />
+              </Reveal>
+              <Reveal>
+                <RelatedWork paragraphs={POWER.related} />
+              </Reveal>
+            </div>
           </div>
 
-          {/* 하단 전폭 이미지 */}
-          {section.wideImage ? (
-            <Reveal className="mt-14 lg:mt-20">
-              <div
-                role="presentation"
-                className="h-50 bg-cover bg-center bg-no-repeat lg:h-[25rem]"
-                // 섹션마다 다른 이미지라 인라인 스타일로 지정한다.
-                style={{ backgroundImage: `url('${section.wideImage}')` }}
-              />
-            </Reveal>
-          ) : null}
+          {/* type--02 수요반응 */}
+          <div className="sub-sc type--02" id={DR.id}>
+            <div className="sub-container cm--type">
+              <SectionTitle label={DR.label} title={DR.title} />
 
-          <div className="site-container">
-            <RelatedWork paragraphs={section.related} />
+              <div className="top-bx">
+                <Reveal animation="fade-right" className="img-bx">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={DR.blocks[0].image} alt={DR.blocks[0].imageAlt} />
+                </Reveal>
+                <Reveal animation="fade-left" className="txt-bx">
+                  <Paragraphs block={DR.blocks[0]} />
+                </Reveal>
+              </div>
+
+              <div className="center-bx">
+                <Reveal animation="fade-right" className="txt-bx">
+                  <Paragraphs block={DR.blocks[1]} />
+                </Reveal>
+                <Reveal animation="fade-left" className="img-bx">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={DR.blocks[1].image} alt={DR.blocks[1].imageAlt} />
+                </Reveal>
+              </div>
+            </div>
+
+            <div className="bottom-bx">
+              <Reveal className="img-bx">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={DR.wideImage} alt="" />
+              </Reveal>
+              <Reveal>
+                <RelatedWork paragraphs={DR.related} />
+              </Reveal>
+            </div>
+          </div>
+
+          {/* type--03 HEMS / BEMS */}
+          <div className="sub-sc type--03" id={EMS.id}>
+            <div className="sub-container">
+              <div className="left-bx">
+                <Reveal animation="fade-right" className="sub-title-bx">
+                  <p className="title">{EMS.label}</p>
+                  <p className="info--title whitespace-pre-line">{EMS.title}</p>
+                  <div className="mt-5 lg:mt-8">
+                    <Paragraphs block={EMS.blocks[0]} />
+                  </div>
+
+                  <div className="bottom-bx">
+                    <p className="type--title">장인의공간 관련업무</p>
+                    {EMS.related.map((paragraph, index) => (
+                      <p
+                        key={index}
+                        className={`dec--03 whitespace-pre-line${index > 0 ? ' mt-5 lg:mt-8' : ''}`}
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                </Reveal>
+              </div>
+
+              <Reveal animation="fade-left" className="right-bx">
+                <div className="img-bx">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={EMS.blocks[0].image} alt={EMS.blocks[0].imageAlt} />
+                </div>
+              </Reveal>
+            </div>
+          </div>
+
+          {/* type--04 Microgrid */}
+          <div className="sub-sc type--04" id={MICROGRID.id}>
+            <div className="sub-container">
+              <div className="text-bx">
+                <Reveal className="sub-title-bx">
+                  <p className="title">{MICROGRID.label}</p>
+                  <p className="info--title whitespace-pre-line">{MICROGRID.title}</p>
+                  <div className="mt-5 lg:mt-8">
+                    <Paragraphs block={MICROGRID.blocks[0]} />
+                  </div>
+                </Reveal>
+              </div>
+
+              <Reveal className="bottom-bx">
+                <div className="img-bx">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={MICROGRID.wideImage} alt="" />
+                </div>
+                <div className="txt-bx">
+                  <p className="type--title">장인의공간 관련업무</p>
+                  {MICROGRID.related.map((paragraph, index) => (
+                    <p
+                      key={index}
+                      className={`dec--03 whitespace-pre-line${index > 0 ? ' mt-5 lg:mt-8' : ''}`}
+                    >
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </Reveal>
+            </div>
+          </div>
+
+          {/* type--05 Smart Grid */}
+          <div className="sub-sc type--05" id={SMARTGRID.id}>
+            <div className="sub-container">
+              <div className="text-bx">
+                <Reveal className="sub-title-bx">
+                  <p className="title">{SMARTGRID.label}</p>
+                  <p className="info--title whitespace-pre-line">{SMARTGRID.title}</p>
+                  <div className="mt-5 lg:mt-8">
+                    <Paragraphs block={SMARTGRID.blocks[0]} />
+                  </div>
+                </Reveal>
+              </div>
+
+              {SMARTGRID.steps ? (
+                <div className="step-bx">
+                  <Reveal>
+                    <p className="step-title">{SMARTGRID.steps.title}</p>
+                  </Reveal>
+
+                  {/* 원본은 원(li)과 화살표(li.arrow-bx)를 형제 li 로 번갈아 놓는다. */}
+                  <ul className="step-item">
+                    {SMARTGRID.steps.items.flatMap((item, index) => {
+                      const circle = (
+                        <li key={item.step}>
+                          <Reveal animation="fade-right" delay={index * 150}>
+                            <div className={`circle-bx circle0${index + 1}`}>
+                              <div className="txt-bx">
+                                <p className="title--md">{item.step}</p>
+                                <p className="term">{item.term}</p>
+                                <i className="circle-w" />
+                                <p className="dec--03 font-weight-normal whitespace-pre-line">
+                                  {item.desc}
+                                </p>
+                              </div>
+                            </div>
+                          </Reveal>
+                        </li>
+                      );
+
+                      if (index === 0) return [circle];
+
+                      return [
+                        <li key={`${item.step}-arrow`} className="arrow-bx" aria-hidden>
+                          <i className="xi-arrow-right" />
+                        </li>,
+                        circle,
+                      ];
+                    })}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+
+            <Reveal className="bottom-bx">
+              <div className="img-bx">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={SMARTGRID.wideImage} alt="" />
+              </div>
+              <RelatedWork paragraphs={SMARTGRID.related} />
+            </Reveal>
           </div>
         </section>
-      ))}
-    </main>
+      </main>
+    </>
   );
 }

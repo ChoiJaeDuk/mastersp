@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import ScrollTopButton from '@/components/layout/ScrollTopButton';
+import PolicyPopupLink from '@/components/ui/PolicyPopupLink';
 import { COMPANY_INFO, NAV_ITEMS, POLICY_LINKS } from '@/lib/navigation';
 
 /** 사이트 공통 푸터 (Server Component) */
@@ -68,9 +69,13 @@ export default function Footer() {
                     : 'relative pl-4 before:absolute before:top-1/2 before:left-0 before:h-1/2 before:w-px before:-translate-y-1/2 before:bg-[#666]'
                 }
               >
-                <Link href={link.href} className="transition-colors hover:text-brand">
+                {/* 원본 푸터도 페이지 이동이 아니라 팝업으로 연다. (kor/pop/*.html) */}
+                <PolicyPopupLink
+                  kind={link.kind}
+                  className="link popup-link transition-colors hover:text-brand"
+                >
                   {link.label}
-                </Link>
+                </PolicyPopupLink>
               </li>
             ))}
           </ul>

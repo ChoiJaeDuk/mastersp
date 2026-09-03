@@ -32,10 +32,22 @@ export type ProductCase = {
 export type ProductContent = {
   slug: string;
   name: string;
-  /** 상단 배경 이미지 */
-  heroImage: string | null;
-  /** 제품 구성도 이미지 */
-  dbImage: string | null;
+
+  /** 상단 배경 블록 클래스 (원본 .sc--product .xxx-bg) */
+  heroClass: string;
+  /** 제품 구성도를 CSS 배경으로 그리는 경우의 클래스 */
+  dbImgClass: string | null;
+  /** 제품 구성도를 <img> 로 그리는 경우 [데스크톱, 모바일] */
+  dbImages: [string, string] | null;
+  /** .content-img 배경 블록 사용 여부 */
+  contentImg: boolean;
+  /** .sudp-img [데스크톱, 모바일] */
+  sudpImages: [string, string] | null;
+  /** 구축사례 목록 클래스 */
+  caseListClass: string;
+  /** 구축사례 날짜 클래스 */
+  dateClass: string;
+
   intro: ContentBlock[];
   features: FeatureGroup[];
   cases: ProductCase[];

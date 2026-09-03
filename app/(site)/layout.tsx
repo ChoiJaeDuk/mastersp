@@ -5,6 +5,10 @@
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 
+// 원본 사이트의 서브페이지 CSS. 관리자 화면에는 적용되지 않도록 이 레이아웃에서만 불러온다.
+import '@/styles/legacy-common.css';
+import '@/styles/legacy-sub.css';
+
 export default function SiteLayout({
   children,
 }: Readonly<{

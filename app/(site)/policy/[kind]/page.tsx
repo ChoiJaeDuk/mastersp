@@ -1,8 +1,9 @@
 /**
  * 홈페이지 정책 페이지 (Server Component)
- * 원본: kor/policy/privacy.html, kor/policy/email-security.html
+ * 원본: kor/policy/privacy.html · term.html · email-security.html
  *
- * 본문은 관리자에서 관리하는 TBL_HP_TERM 에서 읽는다.
+ * 원본은 세 파일이 본문 인클루드만 다르고 마크업이 같아 하나의 동적 라우트로 합쳤다.
+ * 본문은 관리자에서 관리하는 TBL_HP_TERM 에서 읽는다. (원본의 tb_yark)
  */
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -40,22 +41,28 @@ export default async function PolicyPage({ params }: PageProps) {
   const content = await selectTermContent(kind);
 
   return (
-    <main id="contents" className="overflow-x-clip">
-      <SubVisual titleEn={term.labelEn} titleKo={term.label} />
+    <>
+      {/* 원본은 $nav_policy_en 이 정의돼 있지 않아 제목이 비어 나온다. 의도대로 Policy 를 넣었다. */}
+      <SubVisual titleEn="Policy" />
 
-      <section className="py-20 lg:py-30">
-        <div className="site-container">
-          {content ? (
-            // 본문은 관리자가 등록한 HTML 이다.
-            <div
-              className="policy-content text-[0.9375rem] leading-relaxed text-shell"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
-          ) : (
-            <p className="text-[0.9375rem] text-shell">등록된 내용이 없습니다.</p>
-          )}
-        </div>
-      </section>
-    </main>
+      <main className="main py-20" id="contents">
+        <section className="section">
+          <div className="container">
+            <div className="sub-title mb-4">
+              <h1 className="sub-title__title info--title">{term.label}</h1>
+            </div>
+
+            <div className="text-left text-keep text-gray-5 font-weight-light">
+              {content ? (
+                // 본문은 관리자가 등록한 HTML 이다.
+                <div className="dec--04" dangerouslySetInnerHTML={{ __html: content }} />
+              ) : (
+                <p className="dec--04">등록된 내용이 없습니다.</p>
+              )}
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

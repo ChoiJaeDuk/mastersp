@@ -1,0 +1,789 @@
+/* =====================================================================
+ * 서브페이지 공통 클래스 (원본 assets/css/common.min.css 발췌)
+ *
+ * common.min.css 는 671KB 짜리 Bootstrap 계열 유틸리티 프레임워크라
+ * 전체를 가져오면 .mt-5 / .hidden / .text-center 같은 이름이 Tailwind 와
+ * !important 로 충돌한다. 그래서 서브페이지가 실제로 쓰는 레이아웃·타이포
+ * 클래스만 원문 값 그대로(브레이크포인트 포함) 옮겼다.
+ *
+ * 원본 브레이크포인트: max-width:1400px / 1024px / 768px / 576px
+ * ===================================================================== */
+
+/* ----- 컨테이너 (원본 .sub-container) ----- */
+.sub-container {
+  width: 100%;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1400px;
+}
+
+/* ----- 서브 비주얼 (원본 .sub-visual) ----- */
+.sub-visual {
+  margin-top: 100px;
+  transition: all 0.5s;
+}
+
+.sub-visual__title {
+  font-size: 10.625rem;
+  font-weight: 900;
+  font-family: 'Manrope', sans-serif;
+  color: #e4e4e4;
+  letter-spacing: -5px;
+  line-height: 1;
+  margin-left: -10px;
+}
+
+.sub-visual__title span {
+  position: relative;
+}
+
+.sub-visual__title span::before {
+  content: '';
+  width: 26px;
+  height: 36px;
+  position: absolute;
+  left: 10px;
+  top: 45px;
+  background-image: url('/images/main/triangle-s.png');
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.sub-visual__title.small-title {
+  font-size: 8.125rem;
+  letter-spacing: -10px;
+}
+
+.sub-visual__title.small-title span::before {
+  left: 5px;
+  top: 25px;
+}
+
+.sub-visual__title.small-title2 {
+  font-size: 6.25rem;
+  letter-spacing: -10px;
+}
+
+.sub-visual__title.small-title2 span::before {
+  left: 10px;
+  top: -10px;
+}
+
+@media (max-width: 1024px) {
+  .sub-visual {
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  .sub-visual__title {
+    font-size: 5rem;
+    margin-left: 0;
+  }
+
+  .sub-visual__title span::before {
+    top: 0;
+    left: 0;
+  }
+
+  .sub-visual__title.small-title {
+    font-size: 3.75rem;
+    margin-left: 0;
+    letter-spacing: -5px;
+  }
+
+  .sub-visual__title.small-title2 {
+    font-size: 3.125rem;
+    margin-left: 0;
+    letter-spacing: -5px;
+  }
+
+  .sub-visual__title.small-title2 span::before {
+    left: -10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sub-visual__title {
+    font-size: 3.75rem;
+  }
+
+  .sub-visual__title span::before {
+    top: 10px;
+    background-size: 50%;
+  }
+
+  .sub-visual__title.small-title {
+    font-size: 2.5rem;
+    letter-spacing: -2px;
+    line-height: 1.2;
+  }
+
+  .sub-visual__title.small-title2 {
+    font-size: 2.5rem;
+    letter-spacing: -2px;
+    line-height: 1.2;
+  }
+
+  .sub-visual__title.small-title2 span::before {
+    top: 0;
+    left: 0;
+  }
+}
+
+/* ----- 서브 고정 네비게이션 (원본 .fix-nav / .sub-nav) ----- */
+.fix-nav {
+  width: 100%;
+  margin-top: 3.125rem;
+  position: sticky;
+  left: 0;
+  padding: 0.625rem 0;
+  background-color: #fff;
+  top: 100px;
+  z-index: 99;
+}
+
+.sub-nav {
+  display: flex;
+  align-items: center;
+  gap: 3.125rem;
+  text-align: center;
+  z-index: 100;
+}
+
+.sub-nav a {
+  display: block;
+  font-size: 1.375rem;
+  font-weight: 600;
+  transition: all 0.5s;
+}
+
+.sub-nav a.active,
+.sub-nav a:hover {
+  color: #fe6b00;
+}
+
+.sub-nav.en-pd-nav a {
+  font-size: 1.25rem;
+}
+
+@media (max-width: 1400px) {
+  .sub-nav.en-pd-nav {
+    flex-wrap: wrap;
+    gap: 1.875rem 1.875rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .fix-nav {
+    top: 60px;
+    margin-top: 1.875rem;
+    padding: 1.25rem 0;
+  }
+
+  .sub-nav {
+    gap: 1.875rem;
+    justify-content: center;
+  }
+
+  .sub-nav.pd-nav,
+  .sub-nav.companyNav {
+    flex-wrap: wrap;
+    gap: 1.875rem 1.875rem;
+  }
+
+  .sub-nav a {
+    font-size: 1.125rem;
+  }
+}
+
+/* ----- 서브 섹션 제목 (원본 .sub-title-bx) ----- */
+.sub-title-bx .title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #999;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .sub-title-bx {
+    text-align: center;
+  }
+
+  .sub-title-bx .title {
+    font-size: 1.25rem;
+    margin-bottom: 0;
+  }
+}
+
+/* ----- 타이포그래피 (원본 값 그대로) ----- */
+.info--title {
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: -2px;
+  line-height: 1.2;
+}
+
+.title--md {
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -2px;
+}
+
+.dec--01 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: -1px;
+}
+
+.dec--03 {
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: -1px;
+  line-height: 1.8;
+}
+
+.dec--04 {
+  font-size: 1.125rem;
+  font-weight: 300;
+  letter-spacing: -1px;
+}
+
+.sm-bold {
+  font-weight: 600;
+}
+
+.font-weight-medium {
+  font-weight: 500;
+}
+
+.font-weight-normal {
+  font-weight: 400;
+}
+
+@media (max-width: 1024px) {
+  .info--title {
+    font-size: 2.25rem;
+    letter-spacing: -1px;
+    line-height: 1.3;
+  }
+
+  .title--md {
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+  }
+
+  .dec--01 {
+    font-size: 1.25rem;
+    letter-spacing: -0.5px;
+  }
+
+  .dec--03 {
+    font-size: 1.125rem;
+    letter-spacing: -0.5px;
+    line-height: 1.6;
+    font-weight: normal;
+  }
+
+  .dec--04 {
+    font-size: 1rem;
+    letter-spacing: -0.5px;
+    font-weight: normal;
+  }
+}
+
+/* ----- 서브 섹션 간격 (원본 .sub-sc) ----- */
+.sub-sc {
+  padding-top: 9.375rem;
+}
+
+@media (max-width: 1024px) {
+  .sub-sc {
+    padding-top: 3.75rem;
+  }
+}
+
+/* ----- 주소 라벨 (원본 .addr-tit) ----- */
+.addr-tit {
+  color: #999;
+  margin-right: 0.625rem;
+  font-weight: 500;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 1400px) {
+  .addr-tit {
+    display: block;
+  }
+}
+
+@media (max-width: 1024px) {
+  .addr-tit {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .addr-tit {
+    text-align: center;
+  }
+}
+
+/* ----- 불릿 목록 기본 (원본 .bullet-list) ----- */
+.bullet-list {
+  font-size: inherit;
+}
+
+.bullet-list > .item {
+  display: flex;
+}
+
+/* ---------------------------------------------------------------------
+ * 아이콘 (원본 XEIcon 대체)
+ *
+ * 원본은 1.1MB 짜리 XEIcon 폰트를 통째로 싣지만 실제로 쓰는 아이콘은 9개뿐이라,
+ * 같은 모양의 SVG 마스크로 대체했다. currentColor 를 따르므로 색/크기 지정 방식은 동일하다.
+ * ------------------------------------------------------------------- */
+[class^='xi-'],
+[class*=' xi-'] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  background-color: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.xi-angle-down {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M5 9l7 7 7-7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M5 9l7 7 7-7'/%3E%3C/svg%3E");
+}
+
+.xi-angle-right-thin {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.5' d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.5' d='M9 5l7 7-7 7'/%3E%3C/svg%3E");
+}
+
+.xi-angle-left-thin {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.5' d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.5' d='M15 5l-7 7 7 7'/%3E%3C/svg%3E");
+}
+
+.xi-arrow-right {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M4 12h15m-6-7l7 7-7 7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M4 12h15m-6-7l7 7-7 7'/%3E%3C/svg%3E");
+}
+
+.xi-long-arrow-up {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M12 20V4m-7 7l7-7 7 7'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M12 20V4m-7 7l7-7 7 7'/%3E%3C/svg%3E");
+}
+
+.xi-bars {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M3 6h18M3 12h18M3 18h18'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M3 6h18M3 12h18M3 18h18'/%3E%3C/svg%3E");
+}
+
+.xi-close {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M5 5l14 14M19 5L5 19'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M5 5l14 14M19 5L5 19'/%3E%3C/svg%3E");
+}
+
+.xi-home {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M3 11l9-8 9 8M6 10v10h12V10'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M3 11l9-8 9 8M6 10v10h12V10'/%3E%3C/svg%3E");
+}
+
+.xi-file-download {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M12 3v11m-5-5l5 5 5-5M4 20h16'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23000' stroke-width='2' d='M12 3v11m-5-5l5 5 5-5M4 20h16'/%3E%3C/svg%3E");
+}
+
+/* ----- 폼 기본 (원본 common.min.css 의 input/textarea 리셋) ----- */
+input[type='date'],
+input[type='datetime-local'],
+input[type='email'],
+input[type='file'],
+input[type='month'],
+input[type='number'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='text'],
+input[type='time'],
+input[type='url'],
+input[type='week'],
+select {
+  height: 3.375rem;
+  border: solid 1px #ddd;
+  padding: 0 0.625rem;
+  border-radius: 0;
+}
+
+textarea {
+  border: solid 1px #ddd;
+  background-color: #fff;
+  min-height: 100px;
+  width: 100%;
+  border-radius: 0;
+  resize: none;
+  padding: 0.625rem;
+}
+
+.input_for {
+  width: 100%;
+}
+
+/* ----- 정책 페이지 (원본 common.min.css 발췌) ----- */
+.container {
+  width: 100%;
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1640px;
+}
+
+.text-keep {
+  word-break: keep-all;
+}
+
+.text-gray-5 {
+  color: #555;
+}
+
+.font-weight-light {
+  font-weight: 300;
+}
+
+/* ---------------------------------------------------------------------
+ * 팝업 (원본 common.min.css 의 .popup / magnific-popup 오버레이 발췌)
+ *
+ * 원본은 jQuery magnific-popup 이 .mfp-* 래퍼를 만들어 주는데,
+ * 같은 클래스 구조를 React 컴포넌트(components/ui/Popup.tsx)가 그대로 생성한다.
+ * ------------------------------------------------------------------- */
+.mfp-bg {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1042;
+  overflow: hidden;
+  position: fixed;
+  background: #0b0b0b;
+  opacity: 0.8;
+}
+
+.mfp-wrap {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100% !important;
+  z-index: 1043;
+  position: fixed;
+  outline: none !important;
+}
+
+.mfp-container {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.mfp-container::before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.mfp-content {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 auto;
+  text-align: left;
+  z-index: 1045;
+  width: 100%;
+  cursor: auto;
+}
+
+@media (max-width: 900px) {
+  .mfp-container {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+}
+
+.popup {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem;
+  background-color: #fff;
+  border-radius: 30px;
+}
+
+.popup.popup--lg {
+  max-width: 1200px;
+}
+
+.popup.popup--privary,
+.popup.popup--sm {
+  max-width: 600px;
+  border-radius: 30px;
+}
+
+.popup.popup--privary .text-bx,
+.popup.popup--sm .text-bx {
+  overflow-y: scroll;
+  max-height: 500px;
+  padding: 0 2.5rem 0 0;
+}
+
+.popup.popup--privary .text-bx::-webkit-scrollbar,
+.popup.popup--sm .text-bx::-webkit-scrollbar {
+  width: 10px;
+}
+
+.popup.popup--privary .text-bx::-webkit-scrollbar-thumb,
+.popup.popup--sm .text-bx::-webkit-scrollbar-thumb {
+  width: 10px;
+  background: #fe6b00;
+}
+
+.popup.popup--privary .text-bx::-webkit-scrollbar-track,
+.popup.popup--sm .text-bx::-webkit-scrollbar-track {
+  background: transparent;
+  box-shadow: inset 0 0 5px #f2f2f2;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+}
+
+.popup.popup--privary .popup-title-bx,
+.popup.popup--sm .popup-title-bx {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.25rem;
+}
+
+.popup.popup--privary .popup-title-bx .title,
+.popup.popup--sm .popup-title-bx .title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+  letter-spacing: normal;
+  margin-bottom: 2.5rem;
+}
+
+.popup.popup--privary .popup-title-bx .mfp-close,
+.popup.popup--sm .popup-title-bx .mfp-close {
+  width: fit-content;
+  height: fit-content;
+  line-height: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin-top: -5px;
+  color: #333;
+  opacity: 0.65;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.popup .mfp-close:hover,
+.popup .mfp-close:focus {
+  opacity: 1;
+}
+
+.popup__title {
+  font-size: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .popup.popup--privary .text-bx,
+  .popup.popup--sm .text-bx {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .popup.popup--privary .popup-title-bx,
+  .popup.popup--sm .popup-title-bx {
+    margin-bottom: 1.25rem;
+    padding-bottom: 0;
+  }
+
+  .popup.popup--privary .popup-title-bx .title,
+  .popup.popup--sm .popup-title-bx .title {
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .popup.popup--privary .popup-title-bx .mfp-close,
+  .popup.popup--sm .popup-title-bx .mfp-close {
+    font-size: 1.875rem;
+  }
+}
+
+/* ----- 시작 팝업 (원본 .modal.start_pop) ----- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  opacity: 0.5;
+}
+
+.modal.start_pop {
+  position: fixed;
+  z-index: 1050;
+  max-width: 800px;
+  height: auto;
+  width: auto;
+  overflow: visible;
+  outline: 0;
+}
+
+.modal.start_pop .modal-dialog {
+  margin: 0 auto;
+}
+
+.modal.start_pop .modal-footer {
+  justify-content: space-between;
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.modal-body {
+  position: relative;
+  padding: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid #ddd;
+}
+
+.modal-footer .check-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-youtube-popup {
+  width: 100%;
+  min-width: 468px;
+}
+
+.embed-responsive {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding-top: 56.25%;
+}
+
+.embed-responsive iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.modal-swiper {
+  position: relative;
+}
+
+.modal-swiper .swiper-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  font-size: 24px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(238, 238, 238, 0.47);
+}
+
+.modal-swiper .swiper-button:hover {
+  color: #fe6b00;
+}
+
+.modal-swiper .swiper-button--prev {
+  left: 5px;
+}
+
+.modal-swiper .swiper-button--next {
+  right: 5px;
+}
+
+.pop-close {
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .modal.start_pop {
+    left: 50% !important;
+    top: 15px !important;
+    width: 100%;
+    max-width: 90%;
+    transform: translateX(-50%);
+  }
+
+  .modal-swiper .swiper-button {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-youtube-popup {
+    min-width: 100%;
+  }
+}

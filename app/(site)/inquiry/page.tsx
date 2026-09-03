@@ -1,6 +1,8 @@
 /**
  * 고객문의 페이지 (Server Component)
  * 원본: kor/inquiry/inquiry.html
+ *
+ * 원본 마크업(.sc--inquiry .form-wrap > .left-bx / .right-bx)을 그대로 사용한다.
  */
 import type { Metadata } from 'next';
 
@@ -17,98 +19,80 @@ export const metadata: Metadata = {
   description: '(주)장인의공간에 궁금한 사항이나 제안하고 싶은 내용을 문의해 주세요.',
 };
 
+/** 좌측 사업장 정보 (원본 .form-info) */
+const INFO_GROUPS = [
+  {
+    label: 'Office',
+    rows: OFFICES.map((office) => ({ name: office.name, value: office.address })),
+  },
+  {
+    label: 'Tel',
+    rows: OFFICES.filter((office) => office.tel).map((office) => ({
+      name: office.name,
+      value: office.tel,
+    })),
+  },
+  {
+    label: 'Fax',
+    rows: OFFICES.filter((office) => office.fax).map((office) => ({
+      name: office.name,
+      value: office.fax,
+    })),
+  },
+  {
+    label: 'E-mail',
+    rows: [{ name: '', value: COMPANY_INFO.email }],
+  },
+];
+
 export default function InquiryPage() {
   return (
-    <main id="contents" className="overflow-x-clip">
-      <SubVisual titleEn={NAV.labelEn} titleKo={NAV.label} />
+    <>
+      <SubVisual titleEn={NAV.labelEn} />
 
-      <section className="py-20 lg:py-30">
-        <div className="site-container">
-          <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-20">
-            {/* 좌측: 사업장 정보 (원본 .left-bx) */}
-            <div>
-              <ul className="space-y-10">
-                <li>
-                  <Reveal>
-                    <p className="t-dec-03 font-display font-bold text-brand">Office</p>
-                    <div className="mt-4 space-y-4">
-                      {OFFICES.map((office) => (
-                        <p key={office.name} className="t-dec-01 font-semibold">
-                          <span className="block text-[0.875rem] font-normal text-shell">
-                            {office.name}
-                          </span>
-                          {office.address}
+      <main className="main" id="contents">
+        <section className="sc--inquiry">
+          <div className="sub-container">
+            <div className="form-wrap">
+              <div className="left-bx">
+                <ul className="form-info">
+                  {INFO_GROUPS.map((group) => (
+                    <Reveal key={group.label} as="li">
+                      <p className="dec--03">{group.label}</p>
+                      {group.rows.map((row, index) => (
+                        <p
+                          key={index}
+                          className={`dec--01 sm-bold ${index === 0 ? 'mt-5 lg:mt-0' : 'mt-3 lg:mt-5'}`}
+                        >
+                          {row.name ? (
+                            <span className="addr-tit addr-tit2 block">{row.name}</span>
+                          ) : null}
+                          {row.value}
                         </p>
                       ))}
-                    </div>
-                  </Reveal>
-                </li>
+                    </Reveal>
+                  ))}
+                </ul>
+              </div>
 
-                <li>
-                  <Reveal>
-                    <p className="t-dec-03 font-display font-bold text-brand">Tel</p>
-                    <div className="mt-4 space-y-4">
-                      {OFFICES.filter((office) => office.tel).map((office) => (
-                        <p key={office.name} className="t-dec-01 font-semibold">
-                          <span className="block text-[0.875rem] font-normal text-shell">
-                            {office.name}
-                          </span>
-                          <a href={`tel:${office.tel.split('~')[0]}`} className="hover:text-brand">
-                            {office.tel}
-                          </a>
-                        </p>
-                      ))}
-                    </div>
-                  </Reveal>
-                </li>
-
-                <li>
-                  <Reveal>
-                    <p className="t-dec-03 font-display font-bold text-brand">Fax</p>
-                    <div className="mt-4 space-y-4">
-                      {OFFICES.filter((office) => office.fax).map((office) => (
-                        <p key={office.name} className="t-dec-01 font-semibold">
-                          <span className="block text-[0.875rem] font-normal text-shell">
-                            {office.name}
-                          </span>
-                          {office.fax}
-                        </p>
-                      ))}
-                    </div>
-                  </Reveal>
-                </li>
-
-                <li>
-                  <Reveal>
-                    <p className="t-dec-03 font-display font-bold text-brand">E-mail</p>
-                    <p className="t-dec-01 mt-4 font-semibold">
-                      <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-brand">
-                        {COMPANY_INFO.email}
-                      </a>
+              <div className="right-bx">
+                <div className="input-form">
+                  <Reveal className="form-head">
+                    <h4 className="info--title">Contact Us</h4>
+                    <p className="dec--04 mt-5 lg:mt-7">
+                      장인의공간은 고객의 의견을 소중히 생각합니다.
+                      <br />
+                      궁금한 사항이나 제안하고 싶은 내용이 있으시면 언제든지 문의해 주세요.
                     </p>
                   </Reveal>
-                </li>
-              </ul>
-            </div>
 
-            {/* 우측: 문의 폼 (원본 .right-bx) */}
-            <div>
-              <Reveal>
-                <h2 className="t-info-title font-display font-black">Contact Us</h2>
-                <p className="t-dec-01 mt-5 text-shell lg:mt-7">
-                  장인의공간은 고객의 의견을 소중히 생각합니다.
-                  <br />
-                  궁금한 사항이나 제안하고 싶은 내용이 있으시면 언제든지 문의해 주세요.
-                </p>
-              </Reveal>
-
-              <div className="mt-10 lg:mt-13">
-                <InquiryForm />
+                  <InquiryForm />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }

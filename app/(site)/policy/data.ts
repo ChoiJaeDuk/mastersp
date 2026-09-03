@@ -8,9 +8,9 @@ import { isDbConfigured, queryOne, SQL } from '@/lib/db';
 
 /** URL 세그먼트 → TBL_HP_TERM.TERM_KND_CD 매핑 */
 export const TERM_KINDS = {
-  privacy: { code: 'PRIVACY', label: '개인정보처리방침', labelEn: 'Privacy' },
-  'email-security': { code: 'EMAIL', label: '이메일무단수집거부', labelEn: 'Email' },
-  terms: { code: 'SERVICE', label: '이용약관', labelEn: 'Terms' },
+  privacy: { code: 'PRIVACY', label: '개인정보처리방침' },
+  term: { code: 'SERVICE', label: '이용약관' },
+  'email-security': { code: 'EMAIL', label: '이메일무단수집거부' },
 } as const;
 
 export type TermSlug = keyof typeof TERM_KINDS;

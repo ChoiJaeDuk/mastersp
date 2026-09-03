@@ -7,129 +7,140 @@ import { PROJECT_KINDS, type ProjectsByKind } from '../types';
 
 /**
  * 수행과제 탭 + 아코디언 (Client Component)
- * 원본: kor/project/project.html 의 .tab-head / .accordion-item
+ * 원본: kor/project/project.html 의 .tab-head / .tab-body / .accordion-item
+ *
+ * 원본은 tab-1.1.0.masstige.js + jQuery slideToggle 로 동작하는데,
+ * 같은 클래스(.on / .active)를 React state 로 토글해 동일하게 재현했다.
  */
-export default function ProjectTabs({ projects }: { projects: ProjectsByKind }) {
-  const [activeKind, setActiveKind] = useState<string>(PROJECT_KINDS[0].code);
-  /** 열려 있는 아코디언 항목 id */
-  const [openId, setOpenId] = useState<number | null>(null);
+export default function ProjectTabs({
+  projects,
+  /** 탭별 좌측 고정 문구 (원본 .fix-title-bx) */
+  intros,
+}: {
+  projects: ProjectsByKind;
+  intros: { title: string; desc: string }[];
+}) {
+  const [activeTab, setActiveTab] = useState(0);
 
-  const categories = projects[activeKind] ?? [];
+  /** 열려 있는 아코디언 (탭별로 따로 관리) */
+  const [openIds, setOpenIds] = useState<Record<number, number | null>>({});
+
+  const toggle = (tabIndex: number, id: number) =>
+    setOpenIds((prev) => ({ ...prev, [tabIndex]: prev[tabIndex] === id ? null : id }));
 
   return (
-    <div>
-      {/* 탭 */}
-      <div role="tablist" aria-label="수행과제 구분" className="flex border-b border-[#ddd]">
-        {PROJECT_KINDS.map((kind) => (
-          <button
-            key={kind.code}
-            type="button"
-            role="tab"
-            aria-selected={activeKind === kind.code}
-            onClick={() => {
-              setActiveKind(kind.code);
-              setOpenId(null);
-            }}
-            className="-mb-px border-b-2 px-5 py-4 text-[1rem] transition-colors
-                       aria-selected:border-brand aria-selected:font-semibold aria-selected:text-brand
-                       aria-[selected=false]:border-transparent aria-[selected=false]:text-shell
-                       hover:text-brand"
-          >
-            {kind.label}
-          </button>
-        ))}
+    <div className="project-wrap">
+      <div className="tab-head">
+        <ul className="tab-head-list">
+          {PROJECT_KINDS.map((kind, index) => (
+            <li key={kind.code} className={activeTab === index ? 'on' : ''}>
+              <button type="button" onClick={() => setActiveTab(index)}>
+                {kind.label}
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* 목록 */}
-      <div role="tabpanel" className="mt-10 lg:mt-14">
-        {categories.length === 0 ? (
-          <p className="t-dec-03 text-shell">등록된 수행과제가 없습니다.</p>
-        ) : (
-          <div className="space-y-12 lg:space-y-16">
-            {categories.map((category) => (
-              <section key={category.name}>
-                <p className="t-title-md font-display font-black text-brand">{category.name}</p>
+      <div className="tab-body">
+        {PROJECT_KINDS.map((kind, tabIndex) => {
+          const categories = projects[kind.code] ?? [];
+          // 첫 항목은 원본과 같이 기본으로 펼쳐 둔다.
+          const defaultOpenId = categories[0]?.items[0]?.id ?? null;
+          const openId =
+            openIds[tabIndex] === undefined ? defaultOpenId : openIds[tabIndex];
 
-                <ul className="mt-5 border-t-2 border-ink">
-                  {category.items.map((item) => {
-                    const isOpen = openId === item.id;
+          return (
+            <div key={kind.code} className={`tab-con${activeTab === tabIndex ? ' on' : ''}`}>
+              <div className="left-bx">
+                <div className="fix-title-bx">
+                  <p className="fix-title">
+                    {intros[tabIndex].title.split('\n').map((line, index) => (
+                      <span key={index}>
+                        {line}
+                        {index === 0 ? <br className="hidden lg:block" /> : null}
+                      </span>
+                    ))}
+                  </p>
+                  <p className="dec--01 font-weight-medium whitespace-pre-line">
+                    {intros[tabIndex].desc}
+                  </p>
+                </div>
+              </div>
 
-                    return (
-                      <li key={item.id} className="border-b border-[#eee]">
-                        <h3>
-                          <button
-                            type="button"
-                            aria-expanded={isOpen}
-                            aria-controls={`project-panel-${item.id}`}
-                            onClick={() => setOpenId(isOpen ? null : item.id)}
-                            className="flex w-full items-center justify-between gap-4 px-1 py-5 text-left"
+              <div className="right-bx">
+                {categories.length === 0 ? (
+                  <p className="dec--03">등록된 수행과제가 없습니다.</p>
+                ) : (
+                  categories.map((category) => (
+                    <div key={category.name} className="flex-bx">
+                      <p className="year title--md sm-bold active">{category.name}</p>
+
+                      {category.items.map((item) => {
+                        const isOpen = openId === item.id;
+
+                        return (
+                          <div
+                            key={item.id}
+                            className={`accordion-item${isOpen ? ' active' : ''}`}
                           >
-                            <span className="t-dec-01 font-semibold text-ink">{item.title}</span>
-                            <span
-                              aria-hidden
-                              className={`shrink-0 text-brand transition-transform ${
-                                isOpen ? 'rotate-180' : ''
-                              }`}
-                            >
-                              ▾
-                            </span>
-                          </button>
-                        </h3>
-
-                        <div
-                          id={`project-panel-${item.id}`}
-                          hidden={!isOpen}
-                          className="bg-[#fafafa] px-5 py-6"
-                        >
-                          <dl className="space-y-4">
-                            <div className="flex flex-col gap-1 sm:flex-row sm:gap-6">
-                              <dt className="w-20 shrink-0 text-[0.9375rem] font-semibold text-ink">
-                                기간
-                              </dt>
-                              <dd className="t-dec-03 text-shell">
-                                {formatDate(item.startDate)} ~ {formatDate(item.endDate)}
-                              </dd>
-                            </div>
-
-                            {item.client ? (
-                              <div className="flex flex-col gap-1 sm:flex-row sm:gap-6">
-                                <dt className="w-20 shrink-0 text-[0.9375rem] font-semibold text-ink">
-                                  발주처
-                                </dt>
-                                <dd className="t-dec-03 text-shell">{item.client}</dd>
+                            <div className="flex-title">
+                              <div
+                                className="heading"
+                                role="button"
+                                tabIndex={0}
+                                aria-expanded={isOpen}
+                                onClick={() => toggle(tabIndex, item.id)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    toggle(tabIndex, item.id);
+                                  }
+                                }}
+                              >
+                                <p className="dec--01 sm-bold">{item.title}</p>
+                                <i className="xi-angle-down" aria-hidden />
                               </div>
-                            ) : null}
 
-                            {item.contents.length > 0 ? (
-                              <div className="flex flex-col gap-1 sm:flex-row sm:gap-6">
-                                <dt className="w-20 shrink-0 text-[0.9375rem] font-semibold text-ink">
-                                  내용
-                                </dt>
-                                <dd>
-                                  <ul className="space-y-2">
+                              <ul className={`flex-item${isOpen ? ' active' : ''}`}>
+                                <li className="flex-con">
+                                  <p className="con-tit sm-bold">
+                                    <span>기간</span>
+                                  </p>
+                                  <p className="con-dec">
+                                    {formatDate(item.startDate)}~{formatDate(item.endDate)}
+                                  </p>
+                                </li>
+                                <li className="flex-con">
+                                  <p className="con-tit sm-bold">
+                                    <span>발주처</span>
+                                  </p>
+                                  <p className="con-dec">{item.client ?? ''}</p>
+                                </li>
+                                <li className="flex-con">
+                                  <p className="con-tit sm-bold">
+                                    <span>내용</span>
+                                  </p>
+                                  <ul className="bullet-list bullet-list--disc">
                                     {item.contents.map((line, index) => (
-                                      <li key={index} className="relative pl-4">
-                                        <span
-                                          aria-hidden
-                                          className="absolute top-[0.7em] left-0 size-1.5 rounded-full bg-brand"
-                                        />
-                                        <span className="t-dec-03 text-shell">{line}</span>
+                                      <li key={index} className="item">
+                                        <p className="dec--04">{line}</p>
                                       </li>
                                     ))}
                                   </ul>
-                                </dd>
-                              </div>
-                            ) : null}
-                          </dl>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </section>
-            ))}
-          </div>
-        )}
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

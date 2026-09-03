@@ -23,15 +23,38 @@ VOID_TAGS = {'br', 'img', 'input', 'meta', 'link', 'hr', 'col'}
 # 슬러그 ← 레거시 파일명
 SLUGS = ['m-core', 'm-cores', 'ets', 'emat', 'micro', 'msys', 'teps']
 
-# 제품 구성도 이미지 (원본 sub.min.css 의 .xxx-db-img background-image)
-DB_IMAGES = {
-    'm-core': 'db-img.jpg',
-    'm-cores': 'mcores-db.jpg',
-    'ets': 'ets-db.jpg',
-    'emat': 'emat-db.jpg',
-    'micro': 'micro-db.jpg',
-    'msys': 'mysy-db.jpg',   # 원본 파일명이 mysy 로 되어 있다
-    'teps': 'teps-db.jpg',
+# 제품별 레이아웃 (원본 HTML 의 클래스 조합 그대로)
+#   heroClass    : 상단 배경 (.sc--product .xxx-bg)
+#   dbImgClass   : 제품 구성도 - CSS 배경으로 그리는 경우
+#   dbImages     : 제품 구성도 - <img> 로 그리는 경우 [데스크톱, 모바일]
+#   contentImg   : .content-img 배경 블록 사용 여부 (m-core 만)
+#   sudpImages   : .sudp-img <img> [데스크톱, 모바일] (m-core 만)
+#   caseListClass: 구축사례 목록 클래스
+#   dateClass    : 구축사례 날짜 클래스 (기간 표기가 긴 제품은 ets-date 로 폭을 넓힌다)
+LAYOUT = {
+    'm-core': dict(heroClass='m-core-bg', dbImgClass=None,
+                   dbImages=['/images/sub/product/db-img.jpg', '/images/sub/product/m-db-img.jpg'],
+                   contentImg=True,
+                   sudpImages=['/images/sub/product/sudp.jpg', '/images/sub/product/m-sudp.jpg'],
+                   caseListClass='case-list', dateClass='date'),
+    'm-cores': dict(heroClass='m-cores-bg', dbImgClass='mcores-db-img', dbImages=None,
+                    contentImg=False, sudpImages=None,
+                    caseListClass='case-list', dateClass='date'),
+    'ets': dict(heroClass='ets-bg', dbImgClass='ets-db-img', dbImages=None,
+                contentImg=False, sudpImages=None,
+                caseListClass='case-list ets-case', dateClass='date ets-date'),
+    'emat': dict(heroClass='emat-bg', dbImgClass='emat-db-img', dbImages=None,
+                 contentImg=False, sudpImages=None,
+                 caseListClass='case-list emat-case', dateClass='date ets-date'),
+    'micro': dict(heroClass='micro-bg', dbImgClass='micro-db-img', dbImages=None,
+                  contentImg=False, sudpImages=None,
+                  caseListClass='case-list emat-case', dateClass='date ets-date'),
+    'msys': dict(heroClass='msys-bg', dbImgClass='msys-db-img', dbImages=None,
+                 contentImg=False, sudpImages=None,
+                 caseListClass='case-list emat-case', dateClass='date ets-date'),
+    'teps': dict(heroClass='teps-bg', dbImgClass='teps-db-img', dbImages=None,
+                 contentImg=False, sudpImages=None,
+                 caseListClass='case-list emat-case', dateClass='date ets-date'),
 }
 
 # 화면에 노출할 제품명 (원본 arr_data.php 의 $nav_2_N)
@@ -189,23 +212,14 @@ def convert(path, slug):
     if content is None:
         raise SystemExit('%s : .pd-content 를 찾지 못했습니다.' % slug)
 
-    # 상단 배경 이미지 (.xxx-bg)
-    hero = root.find(lambda n: n.tag == 'div' and any(c.endswith('-bg') for c in n.classes))
-    hero_class = next((c for c in hero.classes if c.endswith('-bg')), None) if hero else None
-    hero_image = '/images/sub/%s.jpg' % hero_class if hero_class else None
-
-    # 제품 구성도 (m-core 는 <img>, 나머지는 CSS 배경이라 슬러그로 매핑한다)
-    db_image = '/images/sub/product/%s' % DB_IMAGES[slug]
-
     result = {
         'slug': slug,
         'name': PRODUCT_NAMES[slug],
-        'heroImage': hero_image,
-        'dbImage': db_image,
         'intro': [],
         'features': [],
         'cases': [],
     }
+    result.update(LAYOUT[slug])
 
     # 제품소개
     type01 = content.find(lambda n: has_class(n, 'type--01'))
@@ -273,9 +287,9 @@ export function getProduct(slug: string): ProductContent | undefined {
         handle.write(output)
 
     for product in products:
-        print('%-10s intro=%d features=%d cases=%d hero=%s db=%s' % (
+        print('%-10s intro=%d features=%d cases=%d hero=%s' % (
             product['slug'], len(product['intro']), len(product['features']),
-            len(product['cases']), product['heroImage'], product['dbImage']))
+            len(product['cases']), product['heroClass']))
     print('\n-> %s' % target)
 
 

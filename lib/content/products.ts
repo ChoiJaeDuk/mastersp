@@ -10,8 +10,6 @@ export const PRODUCTS: ProductContent[] = [
   {
     "slug": "m-core",
     "name": "M-CORE",
-    "heroImage": "/images/sub/m-core-bg.jpg",
-    "dbImage": "/images/sub/product/db-img.jpg",
     "intro": [
       {
         "type": "p",
@@ -248,13 +246,24 @@ export const PRODUCTS: ProductContent[] = [
         "date": "",
         "desc": "경원대학교 장기용 전력시장 시뮬레이터"
       }
-    ]
+    ],
+    "heroClass": "m-core-bg",
+    "dbImgClass": null,
+    "dbImages": [
+      "/images/sub/product/db-img.jpg",
+      "/images/sub/product/m-db-img.jpg"
+    ],
+    "contentImg": true,
+    "sudpImages": [
+      "/images/sub/product/sudp.jpg",
+      "/images/sub/product/m-sudp.jpg"
+    ],
+    "caseListClass": "case-list",
+    "dateClass": "date"
   },
   {
     "slug": "m-cores",
     "name": "M-CORES",
-    "heroImage": "/images/sub/m-cores-bg.jpg",
-    "dbImage": "/images/sub/product/mcores-db.jpg",
     "intro": [
       {
         "type": "p",
@@ -424,13 +433,18 @@ export const PRODUCTS: ProductContent[] = [
         "date": "",
         "desc": "경원대학교 장기용 전력시장 시뮬레이터"
       }
-    ]
+    ],
+    "heroClass": "m-cores-bg",
+    "dbImgClass": "mcores-db-img",
+    "dbImages": null,
+    "contentImg": false,
+    "sudpImages": null,
+    "caseListClass": "case-list",
+    "dateClass": "date"
   },
   {
     "slug": "ets",
     "name": "전력거래시스템 (ETS)",
-    "heroImage": "/images/sub/ets-bg.jpg",
-    "dbImage": "/images/sub/product/ets-db.jpg",
     "intro": [
       {
         "type": "p",
@@ -489,13 +503,18 @@ export const PRODUCTS: ProductContent[] = [
         "date": "2013.09 ~ 2014.08",
         "desc": "SK E&S"
       }
-    ]
+    ],
+    "heroClass": "ets-bg",
+    "dbImgClass": "ets-db-img",
+    "dbImages": null,
+    "contentImg": false,
+    "sudpImages": null,
+    "caseListClass": "case-list ets-case",
+    "dateClass": "date ets-date"
   },
   {
     "slug": "emat",
     "name": "EMAT",
-    "heroImage": "/images/sub/emat-bg.jpg",
-    "dbImage": "/images/sub/product/emat-db.jpg",
     "intro": [
       {
         "type": "p",
@@ -526,13 +545,18 @@ export const PRODUCTS: ProductContent[] = [
         "date": "2021.12 ~ 2022.06",
         "desc": "한국전력거래소"
       }
-    ]
+    ],
+    "heroClass": "emat-bg",
+    "dbImgClass": "emat-db-img",
+    "dbImages": null,
+    "contentImg": false,
+    "sudpImages": null,
+    "caseListClass": "case-list emat-case",
+    "dateClass": "date ets-date"
   },
   {
     "slug": "micro",
     "name": "마이크로그리드 최적화시뮬레이터",
-    "heroImage": "/images/sub/micro-bg.jpg",
-    "dbImage": "/images/sub/product/micro-db.jpg",
     "intro": [
       {
         "type": "p",
@@ -563,13 +587,18 @@ export const PRODUCTS: ProductContent[] = [
         "date": "2020.10 ~ 2022.02",
         "desc": "한국전력공사 전력연구원"
       }
-    ]
+    ],
+    "heroClass": "micro-bg",
+    "dbImgClass": "micro-db-img",
+    "dbImages": null,
+    "contentImg": false,
+    "sudpImages": null,
+    "caseListClass": "case-list emat-case",
+    "dateClass": "date ets-date"
   },
   {
     "slug": "msys",
     "name": "MSYS",
-    "heroImage": "/images/sub/msys-bg.jpg",
-    "dbImage": "/images/sub/product/mysy-db.jpg",
     "intro": [
       {
         "type": "p",
@@ -632,13 +661,18 @@ export const PRODUCTS: ProductContent[] = [
         "date": "2015.01 ~ 2015.10",
         "desc": "한국전력공사 (납품명:MTAS)"
       }
-    ]
+    ],
+    "heroClass": "msys-bg",
+    "dbImgClass": "msys-db-img",
+    "dbImages": null,
+    "contentImg": false,
+    "sudpImages": null,
+    "caseListClass": "case-list emat-case",
+    "dateClass": "date ets-date"
   },
   {
     "slug": "teps",
     "name": "TEPS",
-    "heroImage": "/images/sub/teps-bg.jpg",
-    "dbImage": "/images/sub/product/teps-db.jpg",
     "intro": [
       {
         "type": "p",
@@ -666,7 +700,14 @@ export const PRODUCTS: ProductContent[] = [
         "date": "2008.11",
         "desc": "한국전력거래소"
       }
-    ]
+    ],
+    "heroClass": "teps-bg",
+    "dbImgClass": "teps-db-img",
+    "dbImages": null,
+    "contentImg": false,
+    "sudpImages": null,
+    "caseListClass": "case-list emat-case",
+    "dateClass": "date ets-date"
   }
 ];
 

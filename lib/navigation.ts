@@ -88,9 +88,13 @@ export const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-export const POLICY_LINKS: NavChild[] = [
-  { label: '개인정보처리방침', href: '/policy/privacy' },
-  { label: '이메일무단수집거부', href: '/policy/email-security' },
+/**
+ * 푸터 정책 링크 (원본 footer.html 과 동일하게 2개만 노출하고 팝업으로 연다)
+ *  kind : 팝업이 읽어올 약관 종류, href : 팝업을 못 쓰는 경우의 대체 경로
+ */
+export const POLICY_LINKS: (NavChild & { kind: 'privacy' | 'term' | 'email-security' })[] = [
+  { label: '개인정보처리방침', href: '/policy/privacy', kind: 'privacy' },
+  { label: '이메일무단수집거부', href: '/policy/email-security', kind: 'email-security' },
 ];
 
 export const COMPANY_INFO = {
