@@ -9,6 +9,7 @@
 import { headers } from 'next/headers';
 import { z } from 'zod';
 
+import { isDbConfigured } from '@/lib/db';
 import { sendMail, wrapMailLayout } from '@/lib/mail';
 import { COMPANY_INFO } from '@/lib/navigation';
 import * as data from './data';
@@ -85,6 +86,22 @@ export async function createInquiry(
 
   const clientIp = await getClientIp();
 
+  // DB 미연결 모드 : 저장을 건너뛰고 콘솔에만 남긴다. (DB 없이 폼 동작을 확인하기 위함)
+  if (!isDbConfigured()) {
+    console.warn('[inquiry] DB 미연결 모드 - 저장하지 않고 접수 처리합니다 :', {
+      ...parsed.data,
+      wrtrIp: clientIp,
+    });
+
+    await notifyAdmin(null, parsed.data);
+
+    return {
+      status: 'success',
+      message: '문의가 정상적으로 접수되었습니다. 빠른 시일 내에 답변드리겠습니다.',
+      fieldErrors: {},
+    };
+  }
+
   try {
     // 도배 방지 (레거시의 자동입력방지코드 대체)
     if (clientIp) {
@@ -128,8 +145,12 @@ export async function createInquiry(
   }
 }
 
-/** 담당자에게 접수 알림 메일을 보낸다. 실패해도 문의 접수 자체는 성공 처리한다. */
-async function notifyAdmin(inqSqno: number, input: z.infer<typeof inquirySchema>) {
+/**
+ * 담당자에게 접수 알림 메일을 보낸다. 실패해도 문의 접수 자체는 성공 처리한다.
+ *
+ * @param inqSqno 문의 일련번호. DB 미연결 모드에서는 채번되지 않으므로 null 이다.
+ */
+async function notifyAdmin(inqSqno: number | null, input: z.infer<typeof inquirySchema>) {
   const to = process.env.MAIL_ADMIN_TO ?? COMPANY_INFO.email;
 
   const rows: Array<[string, string]> = [
@@ -161,7 +182,7 @@ async function notifyAdmin(inqSqno: number, input: z.infer<typeof inquirySchema>
 
   await sendMail({
     to,
-    subject: `[홈페이지 문의 #${inqSqno}] ${input.inqFldNm}`,
+    subject: `[홈페이지 문의${inqSqno === null ? '' : ` #${inqSqno}`}] ${input.inqFldNm}`,
     html: wrapMailLayout('새로운 고객문의가 접수되었습니다.', body),
     replyTo: input.wrtrEml,
   });

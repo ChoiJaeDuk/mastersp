@@ -96,25 +96,28 @@ export default function Header() {
       >
         {activeItem && (
           <div className="site-container">
-            <div className="flex w-full items-center justify-center gap-16 py-[5.625rem]">
-              <div className="w-[422px] shrink-0">
-                <Image
-                  src={activeItem.image}
-                  alt=""
-                  width={422}
-                  height={232}
-                  className="h-auto w-full"
-                />
-                <p className="t-dec-03 mt-6 text-white">
+            {/* 원본 .content-wrap : 늘이지 않고 통째로 가운데 정렬한다. */}
+            <div className="flex w-full items-center justify-center py-[5.625rem]">
+              {/* 원본 .img-bx : 설명(왼쪽) + 이미지(오른쪽) 가로 배치 */}
+              <div className="flex shrink-0 items-center gap-10">
+                <p className="shrink-0 text-xl font-medium text-white">
                   {activeItem.description.map((line) => (
                     <span key={line} className="block">
                       {line}
                     </span>
                   ))}
                 </p>
+                <Image
+                  src={activeItem.image}
+                  alt=""
+                  width={422}
+                  height={232}
+                  className="h-auto w-[422px] shrink-0 rounded-[1em]"
+                />
               </div>
 
-              <ul className="grid flex-1 grid-cols-2 gap-x-10 gap-y-4">
+              {/* 원본 .text-bx : 이미지 오른쪽에 한 줄씩 나열 (margin-left 5.3125rem) */}
+              <ul className="ml-[5.3125rem] shrink-0 space-y-2">
                 {activeItem.children.map((child) => (
                   <li key={child.href} className="leading-tight">
                     <Link

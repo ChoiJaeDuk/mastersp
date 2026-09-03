@@ -1,0 +1,31 @@
+/**
+ * AG-Grid 공통 스타일
+ *
+ * osca 의 styles/ag-grid.css 와 같은 역할로, CUD 상태에 따른 행 표시를 담당한다.
+ * 색상은 공개 사이트 팔레트(브랜드 #fe6b00)에 맞췄다.
+ */
+
+/* 추가된 행 */
+.ag-theme-quartz .ag-row.row-added,
+.ag-row.row-added {
+  background-color: #fff4ec;
+}
+
+/* 수정된 행 */
+.ag-theme-quartz .ag-row.row-updated,
+.ag-row.row-updated {
+  background-color: #eef5ff;
+}
+
+/* 삭제 표시된 행 */
+.ag-theme-quartz .ag-row.row-deleted,
+.ag-row.row-deleted {
+  background-color: #f5f5f5;
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+/* 편집 가능한 셀임을 알 수 있게 옅은 밑줄을 준다 */
+.ag-cell.ag-cell-inline-editing {
+  padding: 0 !important;
+}

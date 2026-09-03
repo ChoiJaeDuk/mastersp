@@ -8,8 +8,14 @@
  * osca(MariaDB) 와의 차이점
  *  - PostgreSQL 은 따옴표 없는 식별자를 소문자로 접는다. 즉 `SELECT USER_ID ...` 의
  *    결과 키는 `user_id` 가 된다. osca 화면 코드가 `row.USER_ID` 를 그대로 쓰므로,
- *    query() 헬퍼가 결과 키를 대문자로 되돌려 준다. (raw 결과가 필요하면 pool 을 직접 사용)
+ *    query() 헬퍼가 결과 키를 대문자로 되돌려 준다. (raw 결과가 필요하면 getPool() 을 직접 사용)
  *  - 트랜잭션은 conn.beginTransaction() 대신 withTransaction() 헬퍼를 사용한다.
+ *
+ * DB 미연결 모드
+ *  - .env.local 의 DB_ADDRESS / DB_ID / DB_NAME 가 비어 있으면 커넥션 풀을 아예 만들지 않고
+ *    쿼리 호출 시 DbNotConfiguredError 를 즉시 던진다. (접속 타임아웃까지 기다리지 않는다)
+ *  - 호출부는 이 오류를 잡아 화면이 뜨는 데 지장이 없도록 처리한다.
+ *    DB 없이 퍼블리싱/화면만 확인하려는 개발 환경을 위한 장치다.
  */
 import { Pool, types, type PoolClient, type QueryResultRow } from 'pg';
 import type { SQLStatement } from 'sql-template-strings';
@@ -27,26 +33,55 @@ declare global {
   var __mastersp_pg_pool__: Pool | undefined;
 }
 
-if (!global.__mastersp_pg_pool__) {
-  global.__mastersp_pg_pool__ = new Pool({
-    host: process.env.DB_ADDRESS,
-    port: Number(process.env.DB_PORT ?? 5432),
-    user: process.env.DB_ID,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    max: 20, // 커넥션 상한
-    idleTimeoutMillis: 60_000, // 유휴 커넥션 60초 후 정리
-    connectionTimeoutMillis: 10_000, // 커넥션 획득 대기 최대 10초
-    keepAlive: true,
-  });
-
-  // 유휴 커넥션에서 발생한 오류로 프로세스가 죽지 않도록 한다.
-  global.__mastersp_pg_pool__.on('error', (err) => {
-    console.error('Unexpected error on idle PostgreSQL client :', err);
-  });
+/**
+ * DB 접속 정보가 채워져 있는지 확인한다.
+ *
+ * 셋 중 하나라도 비어 있으면 DB 미연결 모드로 본다.
+ * (pg 는 host 가 없으면 localhost 로 붙으려 하므로 명시적으로 걸러야 한다)
+ */
+export function isDbConfigured(): boolean {
+  return Boolean(process.env.DB_ADDRESS && process.env.DB_ID && process.env.DB_NAME);
 }
 
-export const pool = global.__mastersp_pg_pool__;
+/** DB 미연결 모드에서 쿼리를 호출했을 때 던지는 오류 */
+export class DbNotConfiguredError extends Error {
+  constructor() {
+    super('DB 접속 정보(DB_ADDRESS / DB_ID / DB_NAME)가 설정되지 않았습니다.');
+    this.name = 'DbNotConfiguredError';
+  }
+}
+
+/**
+ * 커넥션 풀 획득 (최초 호출 시 생성)
+ *
+ * raw 결과가 필요하면 이 풀을 직접 사용한다.
+ *
+ * @throws DbNotConfiguredError DB 미연결 모드인 경우
+ */
+export function getPool(): Pool {
+  if (!isDbConfigured()) throw new DbNotConfiguredError();
+
+  if (!global.__mastersp_pg_pool__) {
+    global.__mastersp_pg_pool__ = new Pool({
+      host: process.env.DB_ADDRESS,
+      port: Number(process.env.DB_PORT ?? 5432),
+      user: process.env.DB_ID,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      max: 20, // 커넥션 상한
+      idleTimeoutMillis: 60_000, // 유휴 커넥션 60초 후 정리
+      connectionTimeoutMillis: 10_000, // 커넥션 획득 대기 최대 10초
+      keepAlive: true,
+    });
+
+    // 유휴 커넥션에서 발생한 오류로 프로세스가 죽지 않도록 한다.
+    global.__mastersp_pg_pool__.on('error', (err) => {
+      console.error('Unexpected error on idle PostgreSQL client :', err);
+    });
+  }
+
+  return global.__mastersp_pg_pool__;
+}
 
 /** 결과 행의 키를 대문자로 변환한다. (PostgreSQL 의 소문자 폴딩 보정) */
 function toUpperKeys<T>(rows: QueryResultRow[]): T[] {
@@ -70,7 +105,7 @@ export async function query<T = Record<string, unknown>>(
   statement: SQLStatement,
   client?: PoolClient,
 ): Promise<T[]> {
-  const executor = client ?? pool;
+  const executor = client ?? getPool();
   const result = await executor.query(statement);
 
   return toUpperKeys<T>(result.rows);
@@ -104,7 +139,7 @@ export async function queryOne<T = Record<string, unknown>>(
 export async function withTransaction<T>(
   fn: (client: PoolClient) => Promise<T>,
 ): Promise<T> {
-  const client = await pool.connect();
+  const client = await getPool().connect();
 
   try {
     await client.query('BEGIN');

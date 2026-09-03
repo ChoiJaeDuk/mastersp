@@ -1,12 +1,13 @@
 /**
- * 전체 레이아웃 (Server Component)
- * 원본: https://www.masterspace.co.kr/kor/main/main.html
+ * 루트 레이아웃 (Server Component)
+ *
+ * html / body / 전역 스타일 / 세션 프로바이더만 담당한다.
+ * 공개 사이트의 헤더·푸터는 app/(site)/layout.tsx, 관리자 화면은 app/admin/layout.tsx 가 그린다.
  */
 import type { Metadata } from 'next';
 import { Manrope } from 'next/font/google';
 
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
+import AuthSessionProvider from '@/components/providers/AuthSessionProvider';
 import { COMPANY_INFO } from '@/lib/navigation';
 
 import './globals.css';
@@ -48,27 +49,7 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <ul>
-          <li>
-            <a className="skip-link" href="#contents">
-              본문내용 바로가기
-            </a>
-          </li>
-          <li>
-            <a className="skip-link" href="#header">
-              헤더 바로가기
-            </a>
-          </li>
-          <li>
-            <a className="skip-link" href="#footer">
-              푸터 바로가기
-            </a>
-          </li>
-        </ul>
-
-        <Header />
-        {children}
-        <Footer />
+        <AuthSessionProvider>{children}</AuthSessionProvider>
       </body>
     </html>
   );
